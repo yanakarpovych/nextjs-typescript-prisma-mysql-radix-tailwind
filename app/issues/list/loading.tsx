@@ -1,20 +1,17 @@
-import { IssueStatusBadge, Link } from "@/app/components";
-import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
+import { Skeleton } from "../../components";
 import IssueActions from "./IssueActions";
 
-const IssuesPage = async () => {
-  const issues = await prisma.issue.findMany();
+const LoadingIssuesPage = () => {
+  const issues = [1, 2, 3, 4, 5];
 
   return (
-    <>
-      <IssueActions></IssueActions>
+    <div>
+      <IssueActions />
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell className="text-center md:text-left">
-              Issue
-            </Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell className="hidden md:table-cell">
               Status
             </Table.ColumnHeaderCell>
@@ -23,28 +20,27 @@ const IssuesPage = async () => {
             </Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
-
         <Table.Body>
           {issues.map((issue) => (
-            <Table.Row key={issue.id}>
-              <Table.Cell className="text-center md:text-left">
-                <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
+            <Table.Row key={issue}>
+              <Table.Cell>
+                <Skeleton />
                 <div className="block md:hidden">
-                  <IssueStatusBadge status={issue.status} />
+                  <Skeleton />
                 </div>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                <IssueStatusBadge status={issue.status} />
+                <Skeleton />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {issue.createdAt.toDateString()}
+                <Skeleton />
               </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table.Root>
-    </>
+    </div>
   );
 };
 
-export default IssuesPage;
+export default LoadingIssuesPage;

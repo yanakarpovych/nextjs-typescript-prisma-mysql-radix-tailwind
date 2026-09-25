@@ -17,6 +17,8 @@ const IssueDetailPage = async ({ params }: Props) => {
 
   const { id } = await params;
 
+  console.log("PARAM ID:", id);
+
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(id) },
   });
