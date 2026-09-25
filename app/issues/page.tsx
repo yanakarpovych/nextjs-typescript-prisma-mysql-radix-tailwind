@@ -1,15 +1,36 @@
 import { IssueStatusBadge, Link } from "@/app/components";
+import { Issue } from "@/app/generated/prisma/client";
+import { Status } from "@/app/generated/prisma/enums";
 import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
+import NextLink from "next/link";
 import IssueActions from "./IssueActions";
-import { Status } from "@/app/generated/prisma/enums";
 
 const IssuesPage = async ({
   searchParams,
 }: {
-  searchParams: { status: Status };
+  searchParams: Promise<{ status?: string; orderBy?: string }>;
 }) => {
-  const { status } = await searchParams;
+  const params = await searchParams;
+  const { status, orderBy } = params;
+
+  const columns: {
+    label: string;
+    value: keyof Issue;
+    className?: string;
+  }[] = [
+    { label: "Issue", value: "title" },
+    {
+      label: "Status",
+      value: "status",
+      className: "hidden md:table-cell",
+    },
+    {
+      label: "Created",
+      value: "createdAt",
+      className: "hidden md:table-cell",
+    },
+  ];
 
   const statuses = Object.values(Status);
   const validStatus = statuses.includes(status as Status)
@@ -28,15 +49,22 @@ const IssuesPage = async ({
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell className="text-center md:text-left">
-              Issue
-            </Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Status
-            </Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Created
-            </Table.ColumnHeaderCell>
+            {columns.map((column) => (
+              <Table.ColumnHeaderCell key={column.value}>
+                <NextLink
+                  href={{
+                    pathname: "/issues",
+                    query: {
+                      ...(status ? { status } : {}),
+                      ...(orderBy ? { orderBy } : {}),
+                      orderBy: column.value,
+                    },
+                  }}
+                >
+                  {column.label}
+                </NextLink>
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
 

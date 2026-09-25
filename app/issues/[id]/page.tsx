@@ -18,6 +18,7 @@ const IssueDetailPage = async ({ params }: Props) => {
   const { id } = await params;
 
   console.log("PARAM ID:", id);
+  console.log("PARSED ID:", parseInt(id));
 
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(id) },
@@ -35,7 +36,7 @@ const IssueDetailPage = async ({ params }: Props) => {
       {session && (
         <Box>
           <Flex direction="column" gap="4">
-            <AssigneeSelect issue={issue}/>
+            <AssigneeSelect issue={issue} />
             <EditIssueButton issueId={issue.id} />
             <DeleteIssueButton issueId={issue.id}></DeleteIssueButton>
           </Flex>
