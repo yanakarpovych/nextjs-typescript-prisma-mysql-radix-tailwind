@@ -12,7 +12,7 @@ const IssuesPage = async ({
   searchParams: Promise<{ status?: string; orderBy?: string }>;
 }) => {
   const params = await searchParams;
-  const { status, orderBy } = params;
+  const { status } = params;
 
   const columns: {
     label: string;
@@ -37,10 +37,17 @@ const IssuesPage = async ({
     ? (status as Status)
     : undefined;
 
+  const orderBy = columns
+    .map((column) => column.value)
+    .includes(params.orderBy as keyof Issue)
+    ? { [params.orderBy as keyof Issue]: "asc" }
+    : undefined;
+
   const issues = await prisma.issue.findMany({
     where: {
       status: validStatus,
     },
+    orderBy,
   });
 
   return (
