@@ -4,8 +4,9 @@ import prisma from "@/prisma/client";
 import IssueActions from "./IssueActions";
 import Pagination from "../components/Pagination";
 import IssueTable, { columnNames } from "./IssueTable";
-import { Flex } from "@radix-ui/themes";
+import { Button, Flex } from "@radix-ui/themes";
 import { Metadata } from "next";
+import Link from "next/link";
 
 const IssuesPage = async ({
   searchParams,
@@ -41,6 +42,17 @@ const IssuesPage = async ({
   console.log("PARAMS:", params);
   console.log("PAGE:", page);
   console.log("ISSUE COUNT:", issueCount);
+
+  if (issues.length === 0) {
+    return (
+      <Flex justify="between">
+        <p>No issues yet</p>
+        <Button>
+          <Link href="/issues/new">New Issue</Link>
+        </Button>
+      </Flex>
+    );
+  }
 
   return (
     <Flex direction="column" gap="3">
